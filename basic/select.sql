@@ -1,3 +1,7 @@
+/*
+https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#select_
+*/
+
 SELECT name AS movie_name
 FROM movies;
 
