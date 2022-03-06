@@ -42,3 +42,36 @@ FROM movies
 GROUP BY 1, 2
 -- Equivalently: GROUP BY studio, year
 ORDER BY n_rows DESC, year DESC;
+
+/* จัดกลุ่มข้อมูลตามเงื่อนไข */
+SELECT
+	CASE
+		WHEN gross > 100 THEN '100M+'
+		WHEN gross > 50 THEN '50-100M'
+		ELSE 'under 50M'
+	END AS type,
+	year,
+	COUNT(*) AS n
+FROM movies
+GROUP BY 1, 2
+ORDER BY n DESC;
+
+/*
+ROLLUP(<group column 1>, ...) ทำการ GROUP BY ทีละคอลัมน์ตามลำดับ
+
+เอาทุกอย่าง
+อยากสรุปข้อมูลค่ายหนังในแต่ละปี แต่เราก็อยากเห็นภาพรวมของข้อมูลด้วย
+
+หากเราสั่ง ROLLUP(studio, year)
+เราจะได้ข้อมูลที่สรุปทั้งตาราง ไม่มี GROUP BY
+และได้ข้อมูลที่สรุปตามค่ายหนัง GROUP BY studio
+และได้ข้อมูลที่สรุปตามค่ายหนังในแต่ละปี GROUP BY studio, year
+*/
+SELECT
+	studio,
+	year,
+	COUNT(*) AS n_rows,
+	SUM(gross) AS total
+FROM movies
+GROUP BY ROLLUP(1, 2)
+ORDER BY n_rows DESC, year DESC;
